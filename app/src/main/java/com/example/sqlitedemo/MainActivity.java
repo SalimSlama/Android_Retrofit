@@ -70,12 +70,12 @@ public class MainActivity extends AppCompatActivity {
             //Toast.makeText(context, "Battery level: \n"+ level + "%", Toast.LENGTH_LONG).show();
         }
     };
+    private UserService userService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, PackageManager.PERMISSION_GRANTED);
         et_battery = findViewById(R.id.et_battery);
         et_AdrMac = findViewById(R.id.et_AdrMac);
         et_memory = findViewById(R.id.et_memory);
@@ -129,10 +129,11 @@ public class MainActivity extends AppCompatActivity {
         et_modele.setText(Build.MODEL);
         GVersion gVersion = new GVersion();
         et_marque.setText(gVersion.version_release);
+        sendPost(createRequest());
         btLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveUser(createRequest());
+
             }
         });
         content();
@@ -150,7 +151,26 @@ public class MainActivity extends AppCompatActivity {
         userRequest.setVersionSE(et_marque.getText().toString());
         return  userRequest;
     }
-    public void saveUser(UserRequest userRequest){
+    public void sendPost(UserRequest userRequest) {
+        Call<UserRequest> userRequestCall = APIClient.getUserService().saveUser(userRequest);
+
+        userRequestCall.enqueue(new Callback<UserRequest>() {
+
+            @Override
+            public void onResponse(Call<UserRequest> call, Response<UserRequest> response) {
+                    Toast.makeText(MainActivity.this,"saved succ",Toast.LENGTH_LONG).show();
+
+            }
+
+            @Override
+            public void onFailure(Call<UserRequest> call, Throwable t) {
+                Toast.makeText(MainActivity.this,"saved failed"+t.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+
+            }
+        });
+    }
+
+    /*public void saveUser(UserRequest userRequest){
         Call<UserRequest> userRequestCall = APIClient.getUserService().saveUser(userRequest);
         userRequestCall.enqueue(new Callback<UserRequest>() {
             @Override
@@ -167,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this,"saved failed"+t.getLocalizedMessage(),Toast.LENGTH_LONG).show();
             }
         });
-    }
+    }*/
 
 ///////////Lancer l'application en arriére plan ////////////////////////////
     public void backGround(View view){

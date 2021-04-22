@@ -1,6 +1,10 @@
 package com.example.sqlitedemo;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class UserRequest {
+
     private String NivBatterie;
     private String AdrMac;
     private String Memoire;

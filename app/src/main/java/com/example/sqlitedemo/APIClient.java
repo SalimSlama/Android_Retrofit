@@ -7,11 +7,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIClient {
 
-    private static Retrofit getRetrofit(){
+   /* private static Retrofit getRetrofit(){
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient okHttpClient = new OkHttpClient.Builder().addInterceptor(httpLoggingInterceptor).build();
-        //OkHttpClient okHttpClient = UnsafeOkHttpClient.getUnsafeOkHttpClient();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
@@ -24,11 +23,11 @@ public class APIClient {
     public static UserService getUserService(){
         UserService userService = getRetrofit().create(UserService.class);
         return userService;
-    }
-    /*
-    private static final String BASE_URL ="http://127.0.0.1:8000/api/";
+    }*/
+
+    private static final String BASE_URL ="http://192.168.1.49:8000/api/";
     private static Retrofit retrofit = null;
-    public static Retrofit getClient(String baseUrl) {
+    public static Retrofit getClient() {
         if (retrofit==null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
@@ -37,6 +36,10 @@ public class APIClient {
         }
         return retrofit;
     }
-    */
+    public static UserService getUserService(){
+        UserService userService = getClient().create(UserService.class);
+        return userService;
+    }
+
 
 }
