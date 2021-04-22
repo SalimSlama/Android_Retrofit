@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">SQLiteDemo</string>
+    <string name="CustomerName">Customer Name</string>
+    <string name="CustomerAge">Age</string>
+    <string name="ActiveCustomer">Active Customer</string>
+    <string name="labelBattery">Name</string>
+    <string name="adr_mac">Adr MAC</string>
+    <string name="BatteryLevel">Battery Level</string>
+    <string name="AdresseMac">Adresse Mac</string>
+    <string name="Get">Get</string>
+    <string name="Insérer_BTN">InsérerBTN</string>
+    <string name="battery_level">Battery Level :</string>
+    <string name="address_mac">Address Mac :</string>
+    <string name="memory">Memory :</string>
+    <string name="Memory">Memory</string>
+    <string name="Latitude">Latitude</string>
+    <string name="Longitude">Longitude</string>
+    <string name="CODEIMEI">CODE IMEI</string>
+    <string name="localiser">Localiser</string>
+    <string name="latitude">Latitude :</string>
+    <string name="longitude">Longitude :</string>
+    <string name="imei">IMEI :</string>
+    <string name="fabriquant">Fabriquant :</string>
+    <string name="mod_le">Modéle :</string>
+    <string name="marque">Marque :</string>
+    <string name="VersionOS">Version OS</string>
+    <string name="Fabriquant">Fabriquant</string>
+    <string name="Modéle">Modéle</string>
+    <string name="Os_Version">Os_Version</string>
+    <string name="BackGround">BackGround</string>
+    <string name="SalimTest">SalimTest</string>
+</resources>
