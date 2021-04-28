@@ -7,14 +7,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIClient {
 
-   /* private static Retrofit getRetrofit(){
+    private static Retrofit getRetrofit(){
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient okHttpClient = new OkHttpClient.Builder().addInterceptor(httpLoggingInterceptor).build();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("http://192.168.1.49:8000/")
+                .baseUrl("http://192.168.137.152:8000/api/")
                 .client(okHttpClient)
                 .build();
         return retrofit;
@@ -23,11 +23,11 @@ public class APIClient {
     public static UserService getUserService(){
         UserService userService = getRetrofit().create(UserService.class);
         return userService;
-    }*/
-
-    private static final String BASE_URL ="http://192.168.1.49:8000/api/";
+    }
+/*
+    public static final String BASE_URL ="http://192.168.1.49:8000/api/";
     private static Retrofit retrofit = null;
-    public static Retrofit getClient() {
+    public static Retrofit getClient( String baseUrl) {
         if (retrofit==null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
@@ -37,9 +37,9 @@ public class APIClient {
         return retrofit;
     }
     public static UserService getUserService(){
-        UserService userService = getClient().create(UserService.class);
+        UserService userService = getClient(BASE_URL).create(UserService.class);
         return userService;
     }
-
+*/
 
 }

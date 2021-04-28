@@ -5,6 +5,6 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface UserService {
-    @POST("api/addTypeetat/")
+    @POST("addTypeetat/")
     Call<UserRequest> saveUser(@Body UserRequest userRequest);
 }

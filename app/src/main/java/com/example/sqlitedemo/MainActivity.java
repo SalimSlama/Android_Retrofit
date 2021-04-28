@@ -1,14 +1,9 @@
 package com.example.sqlitedemo;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-
 import android.provider.Settings;
-import android.provider.Settings.Secure;
-
-import android.Manifest;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -22,29 +17,23 @@ import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
-
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLOutput;
-import java.sql.Statement;
 import java.util.Collections;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.Manifest.permission.ACCESS_BACKGROUND_LOCATION;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -70,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             //Toast.makeText(context, "Battery level: \n"+ level + "%", Toast.LENGTH_LONG).show();
         }
     };
-    private UserService userService;
+    public UserService userService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,24 +118,26 @@ public class MainActivity extends AppCompatActivity {
         et_modele.setText(Build.MODEL);
         GVersion gVersion = new GVersion();
         et_marque.setText(gVersion.version_release);
-        sendPost(createRequest());
         btLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                sendPost(createRequest());
 
             }
         });
         content();
+        System.out.println("aaaaaaaaaaaaaaaaaaaa");
+        System.out.println(createRequest());
 
     }
     public UserRequest createRequest(){
         UserRequest userRequest = new UserRequest();
-        userRequest.setAdrMac(et_AdrMac.getText().toString());
+        userRequest.setTerminalId(et_IMEI.getText().toString());
         userRequest.setNivBatterie(et_battery.getText().toString());
         userRequest.setMemoire(et_memory.getText().toString());
         userRequest.setLattitude(et_Latitude.getText().toString());
         userRequest.setLongitude(et_Longitude.getText().toString());
-        userRequest.setTerminalId(et_IMEI.getText().toString());
+        userRequest.setFabriquant(et_fabriquant.getText().toString());
         userRequest.setModele(et_modele.getText().toString());
         userRequest.setVersionSE(et_marque.getText().toString());
         return  userRequest;
@@ -169,7 +160,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    /*private void postData(UserRequest userRequest) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://192.168.1.49:8000/api/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        UserService retrofitAPI = retrofit.create(UserService.class);
+        UserRequest modal = new UserRequest();
+        Call<UserRequest> call = retrofitAPI.saveUser(modal);
+        call.enqueue(new Callback<UserRequest>() {
 
+            @Override
+            public void onResponse(Call<UserRequest> call, Response<UserRequest> response) {
+                Toast.makeText(MainActivity.this,"saved succ",Toast.LENGTH_LONG).show();
+
+            }
+
+            @Override
+            public void onFailure(Call<UserRequest> call, Throwable t) {
+                Toast.makeText(MainActivity.this,"saved failed"+t.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+
+            }
+        });
+    }*/
     /*public void saveUser(UserRequest userRequest){
         Call<UserRequest> userRequestCall = APIClient.getUserService().saveUser(userRequest);
         userRequestCall.enqueue(new Callback<UserRequest>() {

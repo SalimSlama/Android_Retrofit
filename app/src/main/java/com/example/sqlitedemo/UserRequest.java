@@ -5,22 +5,34 @@ import com.google.gson.annotations.SerializedName;
 
 public class UserRequest {
 
-    private String NivBatterie;
+    private String NiveauDeBatterie;
     private String AdrMac;
     private String Memoire;
     private String Lattitude;
     private String Longitude;
-    private String TerminalId;
+    private String TerminalID;
     private String Modele;
+    private String Fabriquant;
     private String VersionSE;
+
+    public UserRequest() {
+    }
+
 
 
     public String getNivBatterie() {
-        return NivBatterie;
+        return NiveauDeBatterie;
     }
 
     public void setNivBatterie(String nivBatterie) {
-        NivBatterie = nivBatterie;
+        NiveauDeBatterie = nivBatterie;
+    }
+    public String getFabriquant() {
+        return Fabriquant;
+    }
+
+    public void setFabriquant(String fabriquant) {
+        Fabriquant = fabriquant;
     }
 
     public String getAdrMac() {
@@ -56,11 +68,11 @@ public class UserRequest {
     }
 
     public String getTerminalId() {
-        return TerminalId;
+        return TerminalID;
     }
 
     public void setTerminalId(String terminalId) {
-        TerminalId = terminalId;
+        TerminalID = terminalId;
     }
 
     public String getModele() {
@@ -82,12 +94,12 @@ public class UserRequest {
     @Override
     public String toString() {
         return "UserRequest{" +
-                "NivBatterie=" + NivBatterie +
-                ", AdrMac='" + AdrMac + '\'' +
+                "TerminalId='" + TerminalID + '\'' +
+                ", NiveauDeBatterie='" + NiveauDeBatterie + '\'' +
                 ", Memoire='" + Memoire + '\'' +
                 ", Lattitude='" + Lattitude + '\'' +
                 ", Longitude='" + Longitude + '\'' +
-                ", TerminalId='" + TerminalId + '\'' +
+                ", Fabriquant='" + Fabriquant + '\'' +
                 ", Modele='" + Modele + '\'' +
                 ", VersionSE='" + VersionSE + '\'' +
                 '}';
