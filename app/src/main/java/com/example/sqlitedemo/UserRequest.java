@@ -24,8 +24,8 @@ public class UserRequest {
         return NiveauDeBatterie;
     }
 
-    public void setNivBatterie(String nivBatterie) {
-        NiveauDeBatterie = nivBatterie;
+    public void setNivBatterie(String niveauDeBatterie) {
+        NiveauDeBatterie = niveauDeBatterie;
     }
     public String getFabriquant() {
         return Fabriquant;

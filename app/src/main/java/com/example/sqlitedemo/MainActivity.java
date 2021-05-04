@@ -3,6 +3,9 @@ package com.example.sqlitedemo;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.provider.Settings;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
@@ -29,6 +32,9 @@ import java.net.SocketException;
 import java.sql.Connection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,22 +50,16 @@ public class MainActivity extends AppCompatActivity {
     Button btLocation;
     EditText et_battery, et_AdrMac, et_memory, et_Latitude, et_Longitude, et_IMEI;
     EditText et_fabriquant, et_modele, et_marque;
-    //DataBaseHelper dataBaseHelper;
-    //TelephonyManager tm;
-    //String imei;
-    Boolean permission=false;
-    Connection connect;
-    String ConnectionResult = "";
     private FusedLocationProviderClient fusedLocationProviderClient;
-    private BroadcastReceiver batterylevel = new BroadcastReceiver() {
+    Timer timer;
+   /* private BroadcastReceiver batterylevel = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
             et_battery.setText(String.valueOf(level) + "%");
-            //Toast.makeText(context, "Battery level: \n"+ level + "%", Toast.LENGTH_LONG).show();
         }
-    };
-    public UserService userService;
+    };*/
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +77,11 @@ public class MainActivity extends AppCompatActivity {
         et_marque = findViewById(R.id.et_marque);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         String android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        //dataBaseHelper = new DataBaseHelper(MainActivity.this);
+        BatteryManager bm = (BatteryManager)getSystemService(BATTERY_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            int percentage = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+            et_battery.setText(percentage+"%");
+        }
 /*
         //Lancement en arriére-plan
         ///////////////////////////////////
@@ -92,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 */
         ///////////////////////////////////////////////////
         //Exécuter
-        this.registerReceiver(this.batterylevel, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        //this.registerReceiver(this.batterylevel, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         et_memory.setText(GetMemoryInfo() + " Kb");
         AdrMacButtonClick(et_AdrMac);
         et_Latitude.setText("15.254845");
@@ -121,13 +124,25 @@ public class MainActivity extends AppCompatActivity {
         btLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendPost(createRequest());
+                //sendPost(createRequest());
+                System.out.println("le niveau de batterie est :"+et_battery.getText().toString());
+                System.out.println(createRequest());
 
             }
         });
-        content();
-        System.out.println("aaaaaaaaaaaaaaaaaaaa");
-        System.out.println(createRequest());
+        sendPost(createRequest());
+       // content();
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(MainActivity.this, UserService.class);
+                startActivity(intent);
+                finish();
+            }
+        },5000);
+
+
 
     }
     public UserRequest createRequest(){
@@ -307,6 +322,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void content(){
         refresh(1000);
+
     }
     private void refresh(int millisecondes){
         final Handler handler = new Handler();
