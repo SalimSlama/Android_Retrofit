@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     EditText et_battery, et_AdrMac, et_memory, et_Latitude, et_Longitude, et_IMEI;
     EditText et_fabriquant, et_modele, et_marque;
     private FusedLocationProviderClient fusedLocationProviderClient;
-    Timer timer;
+    int count =0;
    /* private BroadcastReceiver batterylevel = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -59,8 +59,6 @@ public class MainActivity extends AppCompatActivity {
             et_battery.setText(String.valueOf(level) + "%");
         }
     };*/
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
         String android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         BatteryManager bm = (BatteryManager)getSystemService(BATTERY_SERVICE);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            int percentage = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
-            et_battery.setText(percentage+"%");
+            int niveauBatterie = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+            et_battery.setText(niveauBatterie+"%");
         }
 /*
         //Lancement en arriére-plan
@@ -116,34 +114,15 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE},123);
             System.out.println("no permission to get IMEI");
         }*/
+
         et_IMEI.setText(android_id);
         et_fabriquant.setText(Build.MANUFACTURER);
         et_modele.setText(Build.MODEL);
         GVersion gVersion = new GVersion();
         et_marque.setText(gVersion.version_release);
-        btLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //sendPost(createRequest());
-                System.out.println("le niveau de batterie est :"+et_battery.getText().toString());
-                System.out.println(createRequest());
-
-            }
-        });
+        //envoie des données via retrofit
         sendPost(createRequest());
-       // content();
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(MainActivity.this, UserService.class);
-                startActivity(intent);
-                finish();
-            }
-        },5000);
-
-
-
+        content();
     }
     public UserRequest createRequest(){
         UserRequest userRequest = new UserRequest();
@@ -321,7 +300,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
     public void content(){
-        refresh(1000);
+        count++;
+        System.out.println(count);
+        refresh(10000);
+        sendPost(createRequest());
 
     }
     private void refresh(int millisecondes){
@@ -332,7 +314,7 @@ public class MainActivity extends AppCompatActivity {
                 content();
             }
         };
-
+        handler.postDelayed(runnable,millisecondes);
     }
 }
 
