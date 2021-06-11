@@ -19,7 +19,6 @@ public class APIClient {
                 .build();
         return retrofit;
     }
-
     public static UserService getUserService(){
         UserService userService = getRetrofit().create(UserService.class);
         return userService;

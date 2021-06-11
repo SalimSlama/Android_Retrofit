@@ -4,6 +4,7 @@ package com.example.sqlitedemo;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.provider.Settings;
@@ -44,8 +45,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static android.Manifest.permission.ACCESS_BACKGROUND_LOCATION;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.app.Service.START_STICKY;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
     //Déclaration des éléments
     Button btLocation;
     EditText et_battery, et_AdrMac, et_memory, et_Latitude, et_Longitude, et_IMEI;
@@ -63,41 +65,28 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        et_battery = findViewById(R.id.et_battery);
-        et_AdrMac = findViewById(R.id.et_AdrMac);
-        et_memory = findViewById(R.id.et_memory);
-        et_Latitude = findViewById(R.id.et_Latitude);
-        et_Longitude = findViewById(R.id.et_Longitude);
-        et_IMEI = findViewById(R.id.et_IMEI);
-        btLocation = findViewById(R.id.btLocation);
-        et_fabriquant = findViewById(R.id.et_fabriquant);
-        et_modele = findViewById(R.id.et_modele);
-        et_marque = findViewById(R.id.et_marque);
+        init_component();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         String android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         BatteryManager bm = (BatteryManager)getSystemService(BATTERY_SERVICE);
+        GVersion gVersion = new GVersion();
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             int niveauBatterie = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
             et_battery.setText(niveauBatterie+"%");
         }
-/*
-        //Lancement en arriére-plan
+       //Lancement en arriére-plan
         ///////////////////////////////////
-        ShowCustomerOnListView(dataBaseHelper);
-        Intent intent = new Intent(this, myBackgroundProcess.class);
-        intent.setAction("BackgroundProcess");
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this,0,intent,0);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,0,1,pendingIntent);
-        finish();
-*/
+        //ShowCustomerOnListView(dataBaseHelper);
+
+
+
         ///////////////////////////////////////////////////
         //Exécuter
         //this.registerReceiver(this.batterylevel, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         et_memory.setText(GetMemoryInfo() + " Kb");
         AdrMacButtonClick(et_AdrMac);
-        et_Latitude.setText("15.254845");
-        et_Longitude.setText("20.254845");
+        //et_Latitude.setText("15.254845");
+        //et_Longitude.setText("20.254845");
         getLocation();
         // Obtenir le code IMEI //
         /*int permis = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
@@ -114,15 +103,23 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE},123);
             System.out.println("no permission to get IMEI");
         }*/
+        System.out.println("AAAAAAAAAAA"+createRequest());
 
         et_IMEI.setText(android_id);
         et_fabriquant.setText(Build.MANUFACTURER);
         et_modele.setText(Build.MODEL);
-        GVersion gVersion = new GVersion();
         et_marque.setText(gVersion.version_release);
+       /* Intent intent = new Intent(this, myBackgroundProcess.class);
+        intent.setAction("BackgroundProcess");
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this,0,intent,0);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,0,1,pendingIntent);
+        finish();*/
         //envoie des données via retrofit
-        sendPost(createRequest());
+       // sendPost(createRequest());
         content();
+        System.out.println("AAAAAAAAAAA"+createRequest());
+
     }
     public UserRequest createRequest(){
         UserRequest userRequest = new UserRequest();
@@ -135,6 +132,18 @@ public class MainActivity extends AppCompatActivity {
         userRequest.setModele(et_modele.getText().toString());
         userRequest.setVersionSE(et_marque.getText().toString());
         return  userRequest;
+    }
+    private  void init_component(){
+        et_battery = findViewById(R.id.et_battery);
+        et_AdrMac = findViewById(R.id.et_AdrMac);
+        et_memory = findViewById(R.id.et_memory);
+        et_Latitude = findViewById(R.id.et_Latitude);
+        et_Longitude = findViewById(R.id.et_Longitude);
+        et_IMEI = findViewById(R.id.et_IMEI);
+        btLocation = findViewById(R.id.btLocation);
+        et_fabriquant = findViewById(R.id.et_fabriquant);
+        et_modele = findViewById(R.id.et_modele);
+        et_marque = findViewById(R.id.et_marque);
     }
     public void sendPost(UserRequest userRequest) {
         Call<UserRequest> userRequestCall = APIClient.getUserService().saveUser(userRequest);
@@ -264,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
         return builder.toString();
     }
     /////////////////// Obtenir localisation /////////////////
-    public void getLocation() {
+    /*public void getLocation() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
             if(getApplicationContext().checkSelfPermission(ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED) {
@@ -299,10 +308,35 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+    */
+    public void getLocation() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            if (getApplicationContext().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED)
+            {
+                //get location
+                fusedLocationProviderClient.getLastLocation()
+                        .addOnSuccessListener(new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                if(location!=null)
+                                {
+                                    Double lat = location.getLatitude();
+                                    Double longt = location.getLongitude();
+                                    et_Latitude.setText(lat.toString());
+                                    et_Longitude.setText(longt.toString());
+                                }
+                            }
+                        });
+            }
+            else
+            {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
+            }
+        }
+    }
     public void content(){
-        count++;
-        System.out.println(count);
-        refresh(10000);
+        refresh(30000);
         sendPost(createRequest());
 
     }
@@ -312,10 +346,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 content();
+
             }
         };
         handler.postDelayed(runnable,millisecondes);
     }
+
+
+
+
 }
 
 

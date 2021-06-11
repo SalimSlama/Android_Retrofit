@@ -10,7 +10,7 @@ public class UserRequest {
     private String Memoire;
     private String Lattitude;
     private String Longitude;
-    private String TerminalID;
+    private String Android_id;
     private String Modele;
     private String Fabriquant;
     private String VersionSE;
@@ -68,11 +68,11 @@ public class UserRequest {
     }
 
     public String getTerminalId() {
-        return TerminalID;
+        return Android_id;
     }
 
     public void setTerminalId(String terminalId) {
-        TerminalID = terminalId;
+        Android_id = terminalId;
     }
 
     public String getModele() {
@@ -94,7 +94,7 @@ public class UserRequest {
     @Override
     public String toString() {
         return "UserRequest{" +
-                "TerminalId='" + TerminalID + '\'' +
+                "Android_id='" + Android_id + '\'' +
                 ", NiveauDeBatterie='" + NiveauDeBatterie + '\'' +
                 ", Memoire='" + Memoire + '\'' +
                 ", Lattitude='" + Lattitude + '\'' +
