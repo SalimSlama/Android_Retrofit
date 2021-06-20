@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity  {
             int niveauBatterie = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
             et_battery.setText(niveauBatterie+"%");
         }
-       //Lancement en arriére-plan
         ///////////////////////////////////
         //ShowCustomerOnListView(dataBaseHelper);
 
@@ -85,8 +84,7 @@ public class MainActivity extends AppCompatActivity  {
         //this.registerReceiver(this.batterylevel, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         et_memory.setText(GetMemoryInfo() + " Kb");
         AdrMacButtonClick(et_AdrMac);
-        //et_Latitude.setText("15.254845");
-        //et_Longitude.setText("20.254845");
+
         getLocation();
         // Obtenir le code IMEI //
         /*int permis = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
@@ -103,23 +101,21 @@ public class MainActivity extends AppCompatActivity  {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE},123);
             System.out.println("no permission to get IMEI");
         }*/
-        System.out.println("AAAAAAAAAAA"+createRequest());
 
         et_IMEI.setText(android_id);
         et_fabriquant.setText(Build.MANUFACTURER);
         et_modele.setText(Build.MODEL);
         et_marque.setText(gVersion.version_release);
-       /* Intent intent = new Intent(this, myBackgroundProcess.class);
+        //Lancement en arriére-plan
+        content();
+        Intent intent = new Intent(this, myBackgroundProcess.class);
         intent.setAction("BackgroundProcess");
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this,0,intent,0);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,0,1,pendingIntent);
-        finish();*/
+        //AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,0,1,pendingIntent);
+        finish();
+        recreate();
         //envoie des données via retrofit
-       // sendPost(createRequest());
-        content();
-        System.out.println("AAAAAAAAAAA"+createRequest());
-
     }
     public UserRequest createRequest(){
         UserRequest userRequest = new UserRequest();
@@ -149,61 +145,16 @@ public class MainActivity extends AppCompatActivity  {
         Call<UserRequest> userRequestCall = APIClient.getUserService().saveUser(userRequest);
 
         userRequestCall.enqueue(new Callback<UserRequest>() {
-
             @Override
             public void onResponse(Call<UserRequest> call, Response<UserRequest> response) {
                     Toast.makeText(MainActivity.this,"saved succ",Toast.LENGTH_LONG).show();
-
             }
-
             @Override
             public void onFailure(Call<UserRequest> call, Throwable t) {
                 Toast.makeText(MainActivity.this,"saved failed"+t.getLocalizedMessage(),Toast.LENGTH_LONG).show();
-
             }
         });
     }
-    /*private void postData(UserRequest userRequest) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.49:8000/api/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        UserService retrofitAPI = retrofit.create(UserService.class);
-        UserRequest modal = new UserRequest();
-        Call<UserRequest> call = retrofitAPI.saveUser(modal);
-        call.enqueue(new Callback<UserRequest>() {
-
-            @Override
-            public void onResponse(Call<UserRequest> call, Response<UserRequest> response) {
-                Toast.makeText(MainActivity.this,"saved succ",Toast.LENGTH_LONG).show();
-
-            }
-
-            @Override
-            public void onFailure(Call<UserRequest> call, Throwable t) {
-                Toast.makeText(MainActivity.this,"saved failed"+t.getLocalizedMessage(),Toast.LENGTH_LONG).show();
-
-            }
-        });
-    }*/
-    /*public void saveUser(UserRequest userRequest){
-        Call<UserRequest> userRequestCall = APIClient.getUserService().saveUser(userRequest);
-        userRequestCall.enqueue(new Callback<UserRequest>() {
-            @Override
-            public void onResponse(Call<UserRequest> call, Response<UserRequest> response) {
-                if(response.isSuccessful()){
-                    Toast.makeText(MainActivity.this,"saved succ",Toast.LENGTH_LONG).show();
-                }
-                else{
-                    Toast.makeText(MainActivity.this,"saved failed",Toast.LENGTH_LONG).show();
-                }
-            }
-            @Override
-            public void onFailure(Call<UserRequest> call, Throwable t) {
-                Toast.makeText(MainActivity.this,"saved failed"+t.getLocalizedMessage(),Toast.LENGTH_LONG).show();
-            }
-        });
-    }*/
 
 ///////////Lancer l'application en arriére plan ////////////////////////////
     public void backGround(View view){
@@ -213,31 +164,8 @@ public class MainActivity extends AppCompatActivity  {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,0,1,pendingIntent);
         finish();
+        startActivity(getIntent());
     }
-
-/*
-    public void sqlButton(View v) {
-        try {
-            ConnectionSQL connectionSQL = new ConnectionSQL();
-            connect = connectionSQL.connectionClass();
-            et_battery.setText("SUCCES");
-            if (connect != null) {
-                String query = "Select * from USER_TABLE";
-                Statement st = connect.createStatement();
-                ResultSet rs = st.executeQuery(query);
-                while (rs.next()) {
-                    et_battery.setText(rs.getString(1));
-                }
-            } else {
-                ConnectionResult = "Check Connection";
-                et_battery.setText(ConnectionResult);
-            }
-        } catch (Exception e) {
-            et_battery.setText(e.getMessage());
-        }
-
-    }
-    */
     /////////////////// Obtenir l'adresse Mac /////////////////
     public void AdrMacButtonClick(View view) {
         /*  */
@@ -302,11 +230,8 @@ public class MainActivity extends AppCompatActivity  {
                                 }
                             }
                         });
-
             }
         }
-
-
     }
     */
     public void getLocation() {
@@ -338,7 +263,6 @@ public class MainActivity extends AppCompatActivity  {
     public void content(){
         refresh(30000);
         sendPost(createRequest());
-
     }
     private void refresh(int millisecondes){
         final Handler handler = new Handler();
